@@ -1,2 +1,4 @@
+*_lock.json
 node_modules
-package-lock.json
+swagger/swagger_output.json
+.env*
