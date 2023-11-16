@@ -1,0 +1,75 @@
+name: Pipeline de Produção
+
+# variaveis de ambiente e secrets
+env:
+  NODE_ENV: production
+  VERCEL_ORG_ID: ${{secrets.VERCEL_ORG_ID}}
+  VERCEL_PROJECT_ID: ${{secrets.VERCEL_PROJECT_ID}}
+
+# gatilho de ativação
+on:
+  push:
+    branches:
+      - main
+      - dev 
+
+#jobs
+
+jobs:
+  job1:
+    name: CI - Build e criação de artefato
+    runs-on: ubuntu-latest # sistema operacional
+
+    steps: # sub-etapas
+      - name: Pegar código do Repositorio
+        uses: actions/checkout@v3 #uses para usar bibliotecas prontas
+
+      - name: Instalando pacotes de npm
+        run: npm install
+
+      - name: Gerando documento do swagger.json
+        run: npm run autoDoc
+
+      - name: Apagando pastas node_modules
+        run: rm -rf node_modules #rm -rf comando para apagar arquivo ou pasta
+
+      - name: Apagando pasta .git
+        run: rm -rf .git
+
+      - name: Arquivos e pastas
+        run: ls # ls ver pastas que restaram (no caso pastas ativas)
+
+      - name: Criando artefato ZIP do código buildado
+        uses: actions/upload-artifact@v3
+        with:
+          name: artefatos #nome da pasta criada
+          retention-days: 1 # tempo que o arquivo vai durar
+          path: ./
+
+  job2:
+    name: CD - Deploy na vercel
+    needs: job1 # precisa aguardar (neste caso precisa aguarda job1 para rodas)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixando Artefato do código buildado
+        uses: actions/download-artifact@v3
+        with:
+          name: artefatos
+
+      - name: Instalando pacotes do npm
+        run: npm install
+
+      - name: Arquivos e pastas do artefato
+        run: ls
+
+      - name: Instalando CLI da Vercel
+        run: npm install --global vercel@latest
+
+      - name: Buscando informações do ambiente no Vercel
+        run: vercel pull --yes --environment=production --token=${{secrets.VERCEL_TOKEN}}
+
+      - name: Buildando artefatos do projeto
+        run: vercel build --prod --token=${{secrets.VERCEL_TOKEN}}
+
+      - name: Deploy de artefatos do projeto na Vercel
+        run: vercel deploy --prebuilt --prod --token=${{secrets.VERCEL_TOKEN}}
