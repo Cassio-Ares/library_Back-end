@@ -6,7 +6,7 @@ const cors = require('cors');
 const swaggerUi = require("swagger-ui-express");
 const routes = require('./src/routes');
 
-const swaggerOptions = {customCssUrl:'/swagger-ui.css'}
+const swaggerOptions = {customCssUrl:'/public/swagger-ui.css'}
 
 
 const app = express();
