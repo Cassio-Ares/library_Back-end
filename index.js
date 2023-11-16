@@ -9,7 +9,8 @@ const cors = require('cors');  /**para não termos problema de conflito no front
 const swaggerUi = require('swagger-ui-express');
 const swaggerOption = {customCssUrl: '/swagger-ui.css'}; /**protege para não ter conflito com a vercel em produção*/
 const routes = require('./src/routes');
-const authDocProducao = require('./src/middleware/authDoc');
+const authDocProducao = require('./src/middlewares/autoDoc');
+
 const app = express();
 require('dotenv').config();  /**arquivo de variavel de ambiente */
 
@@ -31,7 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 if(process.env.NODE_ENV !== 'test'){
     const swaggerFile = require('./swagger/swagger_output.json');
     app.get('/', (req, res)=>{ /*#swagger.ignore = true*/ res.redirect('/doc'); });
-    app.use('/doc',authDocProducao, swaggerUi.serve, swaggerUi.setup(swaggerFile, swaggerOption));
+    app.use('/doc', authDocProducao, swaggerUi.serve, swaggerUi.setup(swaggerFile, swaggerOption));
    // app.use('/api-docs', express.static('node_modules/swagger-ui-dist/', { index: false }), swaggerUi.serve, swaggerUi.setup(swaggerFile));
 }
 
