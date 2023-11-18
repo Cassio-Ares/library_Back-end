@@ -4,8 +4,10 @@ const swaggerAutogen = require("swagger-autogen")({
     languages: "pt-BR",    
 });
 
-const outputFile = "./swagger_output.json";
-const endPointsFiles = ["../index.js", "../src/routes.js"];
+
+const outputFile = './swagger_output.json'; /** arquivo que vai ser gerado pelo autogen com a doc no formato json */
+const endPointsFiles = ['../index.js', '../src/routes.js']; /**local das rotas, end-pointes */
+
 
 let doc = {
     info: {
@@ -21,14 +23,19 @@ let doc = {
             description: "Servidor localhost"
         },
         {
-           // url: "http://",
-           // description:"Servidor de produção"
+            url: "https://library-back-end.vercel.app/",
+            description:"Servidor de produção"
         }
     ],
 
     consumes: ["application/json"],
     produces: ["application/json"],
 }
+
+/**
+ * chamando o swaggerAutogen chamado lá em cima e passando parametros para ele
+ * e dando um .then para que ele espere
+ */
 
 swaggerAutogen(outputFile, endPointsFiles, doc).then(()=>{
     console.log("Documentação do Swagger gerada encontra-se no arquivo em " + outputFile);
