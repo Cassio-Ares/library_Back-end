@@ -1,4 +1,5 @@
 const mongooseToSwagger = require('mongoose-to-swagger');
+const EsquemaUser = require('../src/models/user.js');
 const swaggerAutogen = require("swagger-autogen")({
     openapi: "3.0.0",
     languages: "pt-BR",    
@@ -30,6 +31,10 @@ let doc = {
 
     consumes: ["application/json"],
     produces: ["application/json"],
+
+    components: {
+        user: mongooseToSwagger(EsquemaUser)  //esquema trazido dos models 
+    }
 }
 
 /**
