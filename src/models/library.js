@@ -50,3 +50,6 @@ const esquema = new mongoose.Schema(
 );
 
 
+const EsquemaLivro = mongoose.models.Livro || mongoose.model("Livro", esquema);
+module.exports = EsquemaLivro;
+
