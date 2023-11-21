@@ -1,6 +1,6 @@
 const S = require('string');
 
-function tratarErros(req, res) {
+function tratarErros(res, err) {
     //   Entrar quando o moogonsee der algum erro
   if (String(err).includes(`ValidationError:`)) {
     return res.status(400).json({

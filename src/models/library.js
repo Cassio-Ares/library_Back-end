@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const esquema = new mongoose.Schema(
   {
+    posicao: {
+      type: Number,
+      required: "é obrigatório!",
+    },
+
     titulo: {
       type: String,
       required: "Este dado é obrigatório",
@@ -32,16 +37,16 @@ const esquema = new mongoose.Schema(
       trim: true,
     },
 
-    edicao:{
-        type: String,
-        required: "Este dado é obrigatório",
-        trim: true,
-    },
-
-    id: {
+    edicao: {
       type: String,
       required: "Este dado é obrigatório",
       trim: true,
+    },
+
+    usuarioCriador: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Usuario",
+      required: "é obrigatório!",
     },
   },
   {
@@ -49,7 +54,5 @@ const esquema = new mongoose.Schema(
   }
 );
 
-
 const EsquemaLivro = mongoose.models.Livro || mongoose.model("Livro", esquema);
 module.exports = EsquemaLivro;
-

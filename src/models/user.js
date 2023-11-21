@@ -3,41 +3,30 @@ const validator = require("validator");
 
 const esquema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: "Este dado é obrigatório",
-      trim: true,
-      minlength: 3,
+    nome: {
+        type: String,
+        required: 'é obrigatório!',
     },
-
     email: {
-      type: String,
-      required: "Este dado é obrigatório",
-      unique: true,
-      lowercase: true,
-      trim: true,
-      index: true,
-      validate: {
-        validator: (valorDigitado) => {
-          return validator.isEmail(valorDigitado);
-        },
-        message: "inválido!",
-      },
+        type: String,
+        unique: true,
+        required: 'é obrigatório!',
+        lowercase: true,
+        index: true,
+        validate: {
+            validator: (valorDigitado) => { return validator.isEmail(valorDigitado) },
+            message: 'inválido!'
+        }
     },
-
     senha: {
-      type: String,
-      required: "Este dado é obrigatório",
-      trim: true,
-      minlength: 6,
-      select: false,
+        type: String,
+        required: 'é obrigatório!',
+        select: false,
     },
-  },
-
-  {
-    timestamps: true,
-  }
-
+},
+{
+    timestamps: true
+}
 );
 
 
