@@ -38,59 +38,7 @@ router.post("/cadastrar", autoUser, conectarBD, async function (req, res) {
       resposta: respostaBD,
     });
   } catch (error) {
-    return tratarErrosEsperados(res, error);
-  }
-});
-
-router.put("/atualizar/:id", autoUser, conectarBD, async function (req, res) {
-  try {
-    //#swagger.tags = ["Atualizar livros"]
-    let idLivros = req.params.id;
-    let {
-      posicao,
-      titulo,
-      autor,
-      numero_de_paginas,
-      codigo_isbn,
-      editora,
-      edicao,
-    } = req.body;
-    const usuario_Criador = res.usuarioJWT.id;
-
-    const checkLivros = await EsquemaLivro.findOne({
-      _id: idLivros,
-      usuario_Criador: usuario_Criador,
-    });
-
-    if (!checkLivros) {
-      throw new Error(
-        "Livro não encontrado ou só um usuario diferente pode editar"
-      );
-    }
-
-    const livroAtualizado = await EsquemaLivro.updateOne(
-      { _id: idLivros },
-      {
-        posicao,
-        titulo,
-        autor,
-        numero_de_paginas,
-        codigo_isbn,
-        editora,
-        edicao,
-        usuario_Criador,
-      }
-    );
-
-    if (livroAtualizado?.modifiedCount > 0) {
-      res.status(200).json({
-        status: "OK",
-        statusMensagem: "Livro atualizado com sucesso.",
-        resposta: livroAtualizado,
-      });
-    }
-  } catch (error) {
-    return tratarErros(res, req);
+    return tratarErros(res, error);
   }
 });
 
@@ -121,25 +69,75 @@ router.get("/buscarLivro/:id", autoUser, conectarBD, async function (req, res) {
     //#swagger.tags = "Endpoint para buscar livros"
 
     const idLivros = req.params.id;
-    const usuarioLogado = req.usuarioJwt.id;
-
+    
+  
     const respostaBD = await EsquemaLivro.findById({
       _id: idLivros,
-      usuario_logado: usuarioLogado,
     });
 
-    // if (!respostaBD) {
-    //     return res.status(404).json({
-    //         status: 'Not Found',
-    //         statusMensagem: 'Livro não encontrado.',
-    //     });
-    // }
+    if (!respostaBD) {
+        return res.status(404).json({
+             status: 'Not Found',
+            statusMensagem: 'Livro não encontrado.',
+         });
+     }
 
     res.status(200).json({
       status: "OK",
       statusMensagem: "Livro recuperado com sucesso.",
       resposta: respostaBD,
     });
+  } catch (error) {
+    return tratarErros(res, req);
+  }
+});
+
+router.put("/atualizar/:id", autoUser, conectarBD, async function (req, res) {
+  try {
+    //#swagger.tags = ["Atualizar livros"]
+    let idLivros = req.params.id;
+    const usuario_Criador = req.usuarioJWT.id;
+    let {
+      posicao,
+      titulo,
+      autor,
+      numero_de_paginas,
+      codigo_isbn,
+      editora,
+      edicao,
+    } = req.body;
+  
+    const checkLivros = await EsquemaLivro.findOne({
+      _id: idLivros
+    });
+
+    if (!checkLivros) {
+      throw new Error("Livro não encontrado");
+    }
+
+    const livroAtualizado = await EsquemaLivro.updateOne(
+      { _id: idLivros },
+      {
+        posicao,
+        titulo,
+        autor,
+        numero_de_paginas,
+        codigo_isbn,
+        editora,
+        edicao,
+        usuario_Criador,
+      }
+    );
+
+    if(livroAtualizado?.modifiedCount > 0) {
+        const dadosAtualizados = await EsquemaLivro.findOne({ _id: idLivros }).populate('usuario_Criador');
+
+      res.status(200).json({
+        status: "OK",
+        statusMensagem: "Livro atualizado com sucesso.",
+        resposta: dadosAtualizados,
+      });
+    }
   } catch (error) {
     return tratarErros(res, req);
   }
@@ -154,11 +152,11 @@ router.delete(
       //#swagger.tags = ["Deletar livro"];
       //#swagger.tags = "Endpoint para deletar livros"
       const idLivros = req.params.id;
-      const usuarioLogado = req.usuarioJwt.id;
+      const usuario_Criador = req.usuarioJWT.id;
 
       const checkLivro = await EsquemaLivro.findOne({
         _id: idLivros,
-        usuario_logado: usuarioLogado,
+       usuario_Criador: usuario_Criador,
       });
 
       if (!checkLivro) {
@@ -172,10 +170,9 @@ router.delete(
         resposta: respostaBD,
       });
     } catch (error) {
-      return tratarErrosEsperados(res, error);
+      return tratarErros(res, error);
     }
   }
 );
-
 
 module.exports = router;

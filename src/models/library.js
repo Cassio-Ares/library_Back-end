@@ -43,7 +43,7 @@ const esquema = new mongoose.Schema(
       trim: true,
     },
 
-    usuarioCriador: {
+    usuario_Criador: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Usuario",
       required: "é obrigatório!",
