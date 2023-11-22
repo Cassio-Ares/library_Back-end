@@ -69,18 +69,17 @@ router.get("/buscarLivro/:id", autoUser, conectarBD, async function (req, res) {
     //#swagger.tags = "Endpoint para buscar livros"
 
     const idLivros = req.params.id;
-    
-  
+
     const respostaBD = await EsquemaLivro.findById({
       _id: idLivros,
     });
 
     if (!respostaBD) {
-        return res.status(404).json({
-             status: 'Not Found',
-            statusMensagem: 'Livro não encontrado.',
-         });
-     }
+      return res.status(404).json({
+        status: "Not Found",
+        statusMensagem: "Livro não encontrado.",
+      });
+    }
 
     res.status(200).json({
       status: "OK",
@@ -106,9 +105,9 @@ router.put("/atualizar/:id", autoUser, conectarBD, async function (req, res) {
       editora,
       edicao,
     } = req.body;
-  
+
     const checkLivros = await EsquemaLivro.findOne({
-      _id: idLivros
+      _id: idLivros,
     });
 
     if (!checkLivros) {
@@ -129,8 +128,10 @@ router.put("/atualizar/:id", autoUser, conectarBD, async function (req, res) {
       }
     );
 
-    if(livroAtualizado?.modifiedCount > 0) {
-        const dadosAtualizados = await EsquemaLivro.findOne({ _id: idLivros }).populate('usuario_Criador');
+    if (livroAtualizado?.modifiedCount > 0) {
+      const dadosAtualizados = await EsquemaLivro.findOne({
+        _id: idLivros,
+      }).populate("usuario_Criador");
 
       res.status(200).json({
         status: "OK",
@@ -156,7 +157,7 @@ router.delete(
 
       const checkLivro = await EsquemaLivro.findOne({
         _id: idLivros,
-       usuario_Criador: usuario_Criador,
+        usuario_Criador: usuario_Criador,
       });
 
       if (!checkLivro) {
