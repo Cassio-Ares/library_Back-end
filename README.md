@@ -6,6 +6,8 @@ Este é o projeto do Back-end para uma biblioteca, desenvolvido com Node.js, Exp
 
 O site para acessar a documentação da API está disponível [aqui](https://library-back-end.vercel.app/doc/).
 
+https://library-back-end.vercel.app/doc/
+
 ## Funcionalidades
 
 - Cadastro de usuários
